@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Event Planner Flow Guide</title>
+<style>
+:root{--bg:#e8eddc;--card:#fbfaf3;--ink:#1f2d1c;--mut:#6b7566;--line:#dfe3d3;--dk:#24331f;--on:#fff;--ok:#dcead6;--warn:#f6e3cf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a2217;--card:#242d21;--ink:#eef2e6;--mut:#a3ad9c;--line:#38432f;--dk:#c9dcb8;--on:#1a2217;--ok:#34452e;--warn:#4a3a28}}
+:root[data-theme="dark"]{--bg:#1a2217;--card:#242d21;--ink:#eef2e6;--mut:#a3ad9c;--line:#38432f;--dk:#c9dcb8;--on:#1a2217;--ok:#34452e;--warn:#4a3a28}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.pill{display:block;width:max-content;margin:0 auto 12px;background:var(--dk);color:var(--on);font-weight:600;font-size:13px;padding:6px 16px;border-radius:99px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.stepper{display:flex;padding:14px 10px 8px;overflow-x:auto}
+.st{flex:1;min-width:58px;text-align:center;font-size:10px;color:var(--mut);position:relative}
+.st b{display:grid;place-items:center;width:20px;height:20px;margin:0 auto 4px;border-radius:50%;background:var(--line);font-size:10px;position:relative;z-index:1}
+.st:not(:first-child)::before{content:"";position:absolute;top:10px;right:50%;width:100%;height:2px;background:var(--line)}
+.st.done::before,.st.cur::before{background:var(--dk)}
+.st.done b,.st.cur b{background:var(--dk);color:var(--on)}.st.cur{color:var(--ink);font-weight:700}
+main{padding:20px 6px 8px;min-height:380px}
+h2{margin:0 0 2px;font-size:18px}.sub{color:var(--mut);font-size:12.5px;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 10px;text-align:center;cursor:pointer;color:var(--ink);font:inherit;font-weight:600}
+.opt.sel{border:2px solid var(--dk);background:var(--ok)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+input[type=text],input[type=date],input[type=number],input[type=email]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fl{display:flex;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.row small{display:block;color:var(--mut);font-size:12px}
+.btn{background:var(--dk);color:var(--on);border:0;border-radius:6px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.o{background:var(--card);color:var(--ink);border:1px solid var(--dk)}.btn:disabled{opacity:.4;cursor:default}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:4px 11px;font:inherit;font-size:12px;cursor:pointer;margin:0 6px 6px 0}.chip.sel{background:var(--dk);color:var(--on)}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:var(--ok)}
+.tg{width:38px;height:22px;border-radius:99px;background:var(--line);border:0;position:relative;cursor:pointer;flex:none}
+.tg::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--card);transition:.15s}
+.tg.on{background:var(--dk)}.tg.on::after{left:19px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:12px 6px 4px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.ven{cursor:pointer}.ven.sel{outline:2px solid var(--dk)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;display:block;overflow-x:auto}.tbl th,.tbl td{padding:7px 8px;text-align:center;border-bottom:1px solid var(--line)}.tbl td:first-child,.tbl th:first-child{text-align:left}
+.ck{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}.ck input[type=checkbox]{width:18px;height:18px}.ck.d input[type=text]{text-decoration:line-through;color:var(--mut)}select{padding:7px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit}.ck.d span{text-decoration:line-through;color:var(--mut)}
+pre{white-space:pre-wrap;background:var(--bg);padding:12px;border-radius:8px;font-size:12px;margin:8px 0}
+.kv{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}.kv span:first-child{color:var(--mut)}
+h4{margin:12px 0 6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.tools{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:12px;color:var(--mut)}.tools .btn{padding:5px 10px;font-size:12px}
+.note{font-size:12px;color:var(--mut);margin:6px 0}
+</style></head><body>
+<div class="wrap"><span class="pill">Event Planner Flow Guide</span>
+<div class="panel"><div class="stepper" id="stp"></div><main id="m"></main><div class="nav" id="navb"><button class="btn o" data-a="bk" id="bk">Back</button><span id="cnt"></span><button class="btn" data-a="nx" id="nx">Next</button></div></div>
+<div class="tools"><span>Your plan saves automatically in this browser.</span><span><button class="btn o" data-a="evs">My events</button> <button class="btn o" data-a="exp">Export plan</button> <button class="btn o" data-a="impb">Import plan</button> <button class="btn o" data-a="nw">New event</button></span></div>
+<input type="file" id="imp" accept=".json" hidden><input type="file" id="gup" accept=".csv,.txt" hidden></div>
+<script>
+const NAMES=["Event type","Basics","Venue","Design","Guests","Budget","Guest exp.","Review"];
+const TYPES=["Wedding","Conference","Dinner party","Birthday","Corporate retreat","Custom event"];
+const LOGI=[["Guest list & RSVP tracking","Invite tracking and response status per guest.",1,1],["Seating chart / place settings","Table layout, head table, name cards.",1,1],["Transportation","Shuttle, valet, or rideshare coordination.",0],["Parking & valet info","Parking instructions shared with guests.",0],["Breakout rooms after the event","Space for post-event seminars or forums.",0],["Weather forecast integration","Forecast for your event date and location.",0]];
+const CHECK=[[12,"weeks","Book venue & catering"],[8,"weeks","Send save-the-dates"],[4,"weeks","Finalize menu and seating"],[1,"weeks","Confirm vendors and final headcount"]];
+const VEN=[["The Larimer Hall","Banquet hall · up to 200"],["Riverside Pavilion","Outdoor pavilion · up to 150"],["Old Town Loft","Loft · up to 120"],["Garden Room at the Park","Garden venue · up to 140"],["Warehouse District Space","Industrial space · up to 300"]];
+const R="Rentals & décor";
+const H=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
+const HH=s=>{let h=H(s);h=Math.imul(h^(h>>>15),2246822507)>>>0;h=Math.imul(h^(h>>>13),3266489909)>>>0;return (h^(h>>>16))>>>0};
+const T=s=>s.replace(/\b\w/g,c=>c.toUpperCase());
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const CATP={"Photographer":[["Lens & Light","Golden Hour Studio","Everly Photo","Still Moments","Harbor Photography","Northlight Photo"],2500,5000],"Live music":[["The Velvet Trio","Blue Maple Band","Silver Strings Quartet","Midtown Jazz Collective","Wildflower Acoustic"],1500,4000],"DJ":[["Spin Society DJs","Night Owl DJs","Pulse Entertainment","Golden Era DJs"],900,2000],"Caterer":[["Harvest Table Catering","Salt & Thyme","The Copper Fork","Fig & Olive Catering"],8000,16000],"Florist":[["Wild Stem Florals","Petal & Pine","Bloom House","Fern & Fable Florals"],1200,3500],"Videographer":[["Frame & Fable Films","Reel Moments","Evergreen Cinema"],2000,4500],"Bakery":[["Sugar & Sage Bakery","Flour & Flame","Sweet Crumb Co."],300,900]};
+const KW=[[/photo/i,"Photographer"],[/music|band|jazz|quartet|trio|singer|string/i,"Live music"],[/\bdj\b|disc/i,"DJ"],[/cater|food|menu|buffet|chef/i,"Caterer"],[/flor|flower|bouquet|rose/i,"Florist"],[/video|film/i,"Videographer"],[/cake|bak|dessert|cupcake/i,"Bakery"]];
+const DK=[[/flow|flor|bouquet|rose|plant|green/i,["Flower Shop","Florals","Botanicals"],"Flower shop"],[/light|lamp|candle|lantern/i,["Lighting Co.","Light & Glow"],"Lighting rentals"],[/chair|table|seat|sofa|lounge|furnit|couch/i,["Furniture Rentals","Event Furniture"],"Furniture rentals"],[/linen|cloth|napkin|drape/i,["Linen Co.","Table Linens"],"Linen rentals"]];
+const PRE=["Bloom","Willow","Maple & Oak","Gather","Everlast","Velvet","Harbor","Golden","Fern & Fable","Plume"];
+function vend(cat,q,n){
+ q=(q||"").trim();const seed=H(cat+"|"+q.toLowerCase()),out=[];
+ const mi=h=>(1+(h%100)/100*(Math.max(S.radius,5)-1)).toFixed(1),rt=h=>(4.2+(h%8)/10).toFixed(1);
+ if(cat==R){
+  const m=DK.find(d=>d[0].test(q)),sfx=m?m[1]:(q?[T(q.slice(0,22))+" Rentals","Event Décor"]:["Event Rentals","Décor Co."]),ty=m?m[2]:"Décor rentals",it=q?T(q.slice(0,28)):"Décor";
+  for(let k=0;k<n;k++){const h=HH(seed+"x"+k),p=Math.round((150+h%1350)/25)*25;out.push({n:PRE[(seed+k*3)%PRE.length]+" "+sfx[k%sfx.length],c:ty,p,mi:mi(h>>>4),r:rt(h>>>2),x:`${it}: rent ${money(p)} · buy ${money(p*3)}`})}
+ }else{
+  const [pool,lo,hi]=CATP[cat];
+  for(let k=0;k<Math.min(n,pool.length);k++){const h=HH(seed+"y"+k),p=Math.round((lo+h%(hi-lo))/50)*50;out.push({n:pool[(seed+k)%pool.length],c:cat,p,mi:mi(h>>>4),r:rt(h>>>2),x:`${cat}${q?" · "+q:""} · est. ${money(p)}`})}
+ }
+ return out}
+function bres(){let cats=S.bcat?[S.bcat]:null;if(!cats&&S.bq){const k=KW.find(([r])=>r.test(S.bq));cats=k?[k[1]]:null}
+ const one=!!cats;cats=cats||CATS;return cats.flatMap(c=>vend(c,S.bq,one?5:2))}
+const CATS=["Photographer","Live music","DJ","Caterer","Florist","Videographer","Bakery"];
+const DIET=["Vegetarian","Vegan","Gluten-free","Nut allergy"];
+const $=id=>document.getElementById(id);
+const money=n=>"$"+Math.round(n).toLocaleString();
+const S0=()=>({step:0,type:null,name:"",date:"",count:"",loc:"",venue:null,searched:false,dq:"",dqr:"",dran:false,theme:"",radius:15,logi:LOGI.map(l=>!!l[2]),tasks:CHECK.map(c=>({t:c[2],n:c[0],u:c[1],d:0})),nt:"",nn:"",nu:"weeks",bcat:"",bq:"",added:{},beo:false,guests:[],gn:"",ge:"",brief:false,events:{},view:"plan",msg:"",ob:"",editKey:""});
+const S=S0();
+try{const sv=JSON.parse(localStorage.getItem("eventPlannerV3"));if(sv&&typeof sv=="object")Object.assign(S,sv)}catch(x){}
+const tot=d=>Object.values(d.added).reduce((a,b)=>a+b,0),total=()=>tot(S);
+const tg=(k,on)=>`<button class="tg ${on?"on":""}" data-a="tg" data-v="${k}" aria-label="toggle"></button>`;
+const match=(v,q)=>{const h=(v[0]+" "+v[1]+" "+v[2]).toLowerCase();return q.toLowerCase().split(/\s+/).filter(Boolean).every(t=>h.includes(t))};
+function radius(){return `<div class="box"><h4 style="margin-top:0">Search radius</h4><div class="fl" style="align-items:center"><input type="range" min="5" max="50" value="${S.radius}" id="rad" style="flex:1"><b id="radv">${S.radius} mi</b></div></div>`}
+let LAST=[];
+function results(list){
+ if(!S.loc)return `<p class="note">Add a location in the Basics step to see vendors near you.</p>`;
+ LAST=list;
+ return `<div class="box">${list.map((v,i)=>{const on=S.added[v.n]!=null;return `<div class="row"><div><b>${v.n}</b> <span style="color:#c98a1b">★ ${v.r}</span><small>${v.c} · ${v.mi} mi from ${esc(S.loc)}</small><small>${v.x}</small></div><button class="btn ${on?"":"o"}" data-a="add" data-v="${i}">${on?"Added ✓":"Add"}</button></div>`}).join("")}</div><p class="note">Sample listings for demonstration. Real vendor data needs a live data source.</p>`}
+function brief(d){
+ const dn=d.guests.map(g=>{const r=DIET.filter((x,j)=>g.d.includes(j));return r.length?g.n+": "+r.join(", "):null}).filter(Boolean);
+ const on=LOGI.filter((l,i)=>d.logi[i]).map(l=>l[0]).join(", ")||"None",bk=Object.keys(d.added).join(", ")||"None yet";
+ const rs=c=>d.guests.filter(g=>g.rsvp==c).length,iv=d.guests.filter(g=>g.inv).length;
+ const rv=`${iv} of ${d.guests.length} invites sent · ${rs("Attending")} attending, ${rs("Maybe")} maybe, ${rs("Declined")} declined, ${rs("Pending")} pending`;
+ const tk=d.tasks.map(t=>(t.d?"[x] ":"[ ] ")+t.t+" ("+t.n+" "+t.u+" out)").join("\n");
+ return {dn,on,bk,rv,txt:`EVENT BRIEF\n${d.name||"Untitled event"}\nType: ${d.type||"—"}\nDate: ${d.date||"—"}\nGuests expected: ${d.count||"—"}\nLocation: ${d.loc||"—"}\nVenue: ${d.venue||"—"}\nTheme: ${d.theme||"—"}\nLogistics: ${on}\nBooked vendors: ${bk}\nPlanned spend: ${money(tot(d))}\nRSVPs: ${rv}\nDietary: ${dn.join("; ")||"None"}\nChecklist:\n${tk}`}}
+function evView(){
+ const ks=Object.keys(S.events);
+ return `<h2>My events</h2><p class="sub">${esc(S.msg||"Your saved event plans.")}</p>${ks.length?ks.map(k=>{const e=S.events[k],b=brief(e),q=esc(k);return `<div class="box"><b>${q}</b><small style="display:block;color:var(--mut)">${e.type||"—"} · ${e.date||"No date"} · ${e.guests.length} guests · ${money(tot(e))}</small><div class="fl" style="margin-top:10px;flex-wrap:wrap"><button class="btn o" data-a="vb" data-v="${q}">${S.ob==k?"Hide":"View"} brief</button><button class="btn o" data-a="edit" data-v="${q}">Open &amp; edit</button><button class="btn o" data-a="dl" data-v="${q}">Download .txt</button><button class="btn o" data-a="del" data-v="${q}">Delete</button></div>${S.ob==k?`<pre>${esc(b.txt)}</pre>`:""}</div>`}).join(""):`<p class="note">No saved events yet.</p>`}<div class="fl"><button class="btn" data-a="newev">Plan a new event</button><button class="btn o" data-a="back2">Back to planner</button></div>`}
+function view(){
+ const s=S.step;
+ if(s==0)return `<h2>What are you planning?</h2><p class="sub">Pick an event type — the rest of the planner will highlight the features that matter most for it.</p><div class="grid">${TYPES.map(t=>`<button class="opt ${S.type==t?"sel":""}" data-a="type" data-v="${t}">${t}</button>`).join("")}</div>`;
+ if(s==1)return `<h2>Event basics</h2><p class="sub">Core details used throughout the rest of the planner.</p><div class="box f2"><div><label>Event name</label><input type="text" data-f="name" value="${S.name}" placeholder="Name your event"></div><div><label>Date</label><input type="date" data-f="date" value="${S.date}"></div><div><label>Guest count</label><input type="number" data-f="count" value="${S.count}" placeholder="Number of guests"></div><div><label>Location (city or ZIP)</label><input type="text" data-f="loc" value="${S.loc}" placeholder="City or ZIP code"></div></div>`;
+ if(s==2)return `<h2>Find a venue</h2><p class="sub">Enter a location to see venues near you. These are sample listings.</p><div class="box"><label>Search by location</label><div class="fl"><input type="text" data-f="loc" data-go="srch" value="${S.loc}" placeholder="City or ZIP code"><button class="btn" data-a="srch">Search</button></div></div>${S.searched?(S.loc?VEN.map((v,i)=>`<div class="box ven ${S.venue==v[0]?"sel":""}" data-a="ven" data-v="${i}"><b>${v[0]}</b><small style="display:block;color:var(--mut)">${v[1]} · near ${S.loc} · sample listing</small></div>`).join(""):`<p class="note">Type a location first.</p>`):""}`;
+ if(s==3)return `<h2>Design your space</h2><p class="sub">Search for any décor and see rental and purchase options near your event.</p><div class="box"><label>Décor theme</label><input type="text" data-f="theme" value="${esc(S.theme)}" placeholder="Describe your theme (e.g. rustic garden, black-tie, boho)"></div><div class="box"><label>Search for décor</label><div class="fl"><input type="text" data-f="dq" data-go="dsearch" value="${esc(S.dq)}" placeholder="Search décor (e.g. flowers, lighting, linens)"><button class="btn" data-a="dsearch">Search</button></div><div style="margin-top:8px">${["flowers","lighting","lounge seating","linens","tables","backdrops"].map(c=>`<button class="chip" data-a="chip" data-v="${c}">${c}</button>`).join("")}</div></div>${radius()}${S.dran?results(vend(R,S.dqr,6)):`<p class="note">Search above or tap a suggestion to see rental companies and décor options.</p>`}`;
+ if(s==4)return `<h2>Guests & logistics</h2><p class="sub">Turn on what you need and build your countdown checklist.</p><div class="box">${LOGI.map((l,i)=>`<div class="row"><div>${l[0]} ${l[3]?'<span class="tag">RECOMMENDED</span>':""}<small>${l[1]}</small></div>${tg("l"+i,S.logi[i])}</div>`).join("")}</div><div class="box"><h4 style="margin-top:0">Countdown checklist (${S.tasks.filter(t=>t.d).length} of ${S.tasks.length} done)</h4>${S.tasks.map((t,i)=>`<div class="ck ${t.d?"d":""}"><input type="checkbox" data-ck="${i}" ${t.d?"checked":""} aria-label="done"><input type="text" data-ti="${i}" value="${esc(t.t)}" style="flex:1;width:auto"><input type="number" min="0" data-tn="${i}" value="${esc(t.n)}" style="width:64px"><select data-tu="${i}"><option ${t.u=="weeks"?"selected":""}>weeks</option><option ${t.u=="days"?"selected":""}>days</option></select><button class="chip" style="margin:0" data-a="rmt" data-v="${i}" aria-label="remove">✕</button></div>`).join("")}<h4>Add a task</h4><div class="fl" style="flex-wrap:wrap"><input type="text" data-f="nt" data-go="addt" value="${esc(S.nt)}" placeholder="Task name" style="flex:1;min-width:140px"><input type="number" min="0" data-f="nn" value="${esc(S.nn)}" placeholder="How many" style="width:90px"><select data-f="nu"><option ${S.nu=="weeks"?"selected":""}>weeks</option><option ${S.nu=="days"?"selected":""}>days</option></select><button class="btn" data-a="addt">Add</button></div><p class="note">Each task is set to a number of weeks or days before the event. Edit or remove any item.</p></div>`;
+ if(s==5)return `<h2>Budget & vendors</h2><p class="sub">Search for photographers, musicians, caterers and more, then add them to your budget.</p><div class="box"><label>Find a vendor</label><div style="margin-bottom:8px">${CATS.map(c=>`<button class="chip ${S.bcat==c?"sel":""}" data-a="bcat" data-v="${c}">${c}</button>`).join("")}</div><div class="fl"><input type="text" data-f="bq" data-go="bsearch" value="${esc(S.bq)}" placeholder="Search vendors (e.g. jazz band, cake)"><button class="btn" data-a="bsearch">Search</button></div></div>${radius()}${results(bres())}<div class="box"><h4 style="margin-top:0">Your bookings</h4>${Object.keys(S.added).length?Object.entries(S.added).map(([k,p])=>`<div class="kv"><span>${esc(k)} <button class="chip" style="margin:0 0 0 6px;padding:0 7px" data-a="rma" data-v="${esc(k)}" aria-label="remove">✕</button></span><span>${money(p)}</span></div>`).join("")+`<div class="kv"><b>Total planned spend</b><b>${money(total())}</b></div>`:`<p class="note" style="margin:0">Nothing added yet.</p>`}</div><div class="box"><h4 style="margin-top:0">Banquet Event Order (BEO)</h4><button class="btn o" data-a="beo">${S.beo?"Hide":"Generate"} BEO draft</button>${S.beo?`<pre>${esc(`EVENT: ${S.name||"—"}\nDATE: ${S.date||"—"}\nGUESTS: ${S.count||"—"}\nVENUE: ${S.venue||"—"}\nTHEME: ${S.theme||"—"}\nVENDORS: ${Object.keys(S.added).join(", ")||"—"}`)}</pre>`:""}</div>`;
+ if(s==6){const g=S.guests,n=c=>g.filter(x=>x.rsvp==c).length;return `<h2>Guest experience</h2><p class="sub">Add your guests, track invites and RSVPs, and note dietary needs.</p><div class="box"><h4 style="margin-top:0">Add a guest</h4><div class="f2"><input type="text" data-f="gn" data-go="addg" value="${esc(S.gn)}" placeholder="Guest name"><input type="email" data-f="ge" data-go="addg" value="${esc(S.ge)}" placeholder="Email address"></div><div class="fl" style="margin-top:8px"><button class="btn" data-a="addg">Add guest</button><button class="btn o" data-a="upl">Upload list (.csv)</button></div><p class="note">Upload a file with one guest per line: name,email</p></div>${g.length?`<div class="box"><h4 style="margin-top:0">Guest list (${g.length})</h4><p class="note" style="margin-top:0">Invites sent: ${g.filter(x=>x.inv).length} of ${g.length} · Attending ${n("Attending")} · Maybe ${n("Maybe")} · Declined ${n("Declined")} · Pending ${n("Pending")}</p><div class="fl" style="margin-bottom:8px"><button class="btn o" data-a="invall">Mark all sent</button><button class="btn o" data-a="invnone">Clear all</button></div><table class="tbl"><tr><th>Guest</th><th>Invite sent</th><th>RSVP</th>${DIET.map(d=>`<th>${d}</th>`).join("")}<th></th></tr>${g.map((x,i)=>`<tr><td><b>${esc(x.n)||"—"}</b><br><small style="color:var(--mut)">${esc(x.e)}</small></td><td><input type="checkbox" data-iv="${i}" ${x.inv?"checked":""}></td><td><select data-rs="${i}">${["Pending","Attending","Maybe","Declined"].map(o=>`<option ${x.rsvp==o?"selected":""}>${o}</option>`).join("")}</select></td>${DIET.map((d,j)=>`<td><input type="checkbox" data-c="${i}-${j}" ${x.d.includes(j)?"checked":""}></td>`).join("")}<td><button class="chip" style="margin:0" data-a="rmg" data-v="${i}" aria-label="remove">✕</button></td></tr>`).join("")}</table><p class="note">This tracks status only. It does not send real emails, so set each RSVP yourself.</p></div>`:`<p class="note">No guests yet.</p>`}`}
+ const b=brief(S),kv=(a,c)=>`<div class="kv"><span>${a}</span><span>${c}</span></div>`;
+ return `<h2>Review & event brief</h2><p class="sub">Everything you have planned. Click Finish to save it to My events under its event name.</p><div class="box"><h4 style="margin-top:0">Event</h4>${kv("Type",S.type||"—")}${kv("Name",esc(S.name)||"—")}${kv("Date",S.date||"—")}${kv("Guest count",esc(S.count)||"—")}${kv("Venue",S.venue||"—")}<h4>Design</h4>${kv("Theme",esc(S.theme)||"—")}<h4>Logistics enabled</h4><div style="font-size:13px">${b.on}</div><h4>Booked vendors</h4><div style="font-size:13px">${esc(b.bk)}</div><h4>Budget</h4>${kv("Total planned spend",money(total()))}<h4>Guests</h4>${kv("Guests added",S.guests.length)}<div style="font-size:13px">${b.rv}</div><div style="font-size:13px">${esc(b.dn.join("; "))||"No dietary notes"}</div><button class="btn" data-a="brief" style="margin-top:12px">${S.brief?"Hide event brief":"View event brief"}</button>${S.brief?`<pre id="bt">${esc(b.txt)}</pre><button class="btn o" data-a="cp">Copy brief</button>`:""}</div>`;
+}
+function render(){
+ try{localStorage.setItem("eventPlannerV3",JSON.stringify(S))}catch(x){}
+ const ev=S.view=="events";
+ $("stp").style.display=$("navb").style.display=ev?"none":"";
+ $("stp").innerHTML=NAMES.map((n,i)=>`<div class="st ${i<S.step?"done":i==S.step?"cur":""}"><b>${i<S.step?"✓":i+1}</b>${n}</div>`).join("");
+ $("m").innerHTML=ev?evView():view();$("cnt").textContent=`Step ${S.step+1} of 8`;
+ $("bk").disabled=S.step==0;$("nx").textContent=S.step==7?"Finish":"Next";$("nx").disabled=S.step==0&&!S.type;
+}
+const days=t=>(+t.n||0)*(t.u=="weeks"?7:1),srt=()=>S.tasks.sort((a,b)=>days(b)-days(a));
+const snap=()=>{const o=JSON.parse(JSON.stringify(S));["events","view","msg","ob","editKey"].forEach(k=>delete o[k]);return o};
+const fresh=()=>{const ev=S.events;Object.assign(S,S0());S.events=ev};
+const A={
+ type:v=>S.type=v,ven:v=>S.venue=VEN[v][0],srch:()=>S.searched=true,
+ dsearch:()=>{S.dqr=S.dq;S.dran=true},chip:v=>{S.dq=v;S.dqr=v;S.dran=true},
+ bcat:v=>{S.bcat=S.bcat==v?"":v},bsearch:()=>{},
+ add:v=>{const x=LAST[+v];if(!x)return;if(S.added[x.n]!=null)delete S.added[x.n];else S.added[x.n]=x.p},
+ rma:v=>{delete S.added[v]},
+ tg:v=>{const i=+v.slice(1);S.logi[i]=!S.logi[i]},
+ addt:()=>{if(S.nt.trim()){S.tasks.push({t:S.nt.trim(),n:+S.nn||1,u:S.nu||"weeks",d:0});srt();S.nt="";S.nn=""}},
+ rmt:v=>{S.tasks.splice(+v,1)},
+ addg:()=>{if(S.gn.trim()||S.ge.trim()){S.guests.push({n:S.gn.trim(),e:S.ge.trim(),d:[],inv:0,rsvp:"Pending"});S.gn="";S.ge=""}},
+ rmg:v=>{S.guests.splice(+v,1)},invall:()=>S.guests.forEach(g=>g.inv=1),invnone:()=>S.guests.forEach(g=>g.inv=0),
+ beo:()=>{S.beo=!S.beo},brief:()=>{S.brief=!S.brief},
+ upl:()=>{$("gup").click();return 0},impb:()=>{$("imp").click();return 0},
+ cp:(v,t)=>{try{navigator.clipboard.writeText($("bt").textContent);t.textContent="Copied ✓"}catch(x){t.textContent="Select the text to copy"};return 0},
+ exp:()=>{try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));a.download="event-plan.json";a.click()}catch(x){}return 0},
+ evs:()=>{S.view="events";S.msg=""},back2:()=>{S.view="plan"},
+ nw:()=>{if(confirm("Start a new event? Saved events stay saved, but unsaved changes to this plan will be lost.")){fresh();S.view="plan"}},
+ newev:()=>{fresh();S.view="plan";scrollTo(0,0)},
+ vb:v=>{S.ob=S.ob==v?"":v},
+ edit:v=>{const d=S.events[v];if(!d)return;const ev=S.events;Object.assign(S,S0(),JSON.parse(JSON.stringify(d)));S.events=ev;S.step=7;S.editKey=v;S.view="plan";scrollTo(0,0)},
+ del:v=>{if(confirm("Delete this saved event?"))delete S.events[v]},
+ dl:v=>{const e=S.events[v];if(!e)return 0;try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([brief(e).txt],{type:"text/plain"}));a.download=v.replace(/[\\/:*?"<>|]/g,"-")+".txt";a.click()}catch(x){}return 0},
+ bk:()=>{S.step--;scrollTo(0,0)},
+ nx:()=>{if(S.step==7){const nm=S.name.trim()||"Untitled event";if(S.events[nm]&&S.editKey!==nm&&!confirm("An event with this name is already saved. Replace it?"))return 0;if(S.editKey&&S.editKey!==nm)delete S.events[S.editKey];S.events[nm]=snap();S.editKey=nm;S.msg=`Saved “${nm}” to My events. You can plan another event any time.`;S.view="events";scrollTo(0,0);return}S.step++;scrollTo(0,0)}
+};
+document.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&A[t.dataset.a](t.dataset.v,t)!==0)render()});
+document.addEventListener("keydown",e=>{if(e.key=="Enter"&&e.target.dataset.go){A[e.target.dataset.go]();render()}});
+document.addEventListener("input",e=>{const t=e.target,d=t.dataset;
+ if(d.f)S[d.f]=t.value;
+ else if(d.ti!==undefined)S.tasks[+d.ti].t=t.value;
+ else if(d.tn!==undefined)S.tasks[+d.tn].n=t.value;
+ else if(t.id=="rad"){S.radius=+t.value;$("radv").textContent=t.value+" mi"}
+ try{localStorage.setItem("eventPlannerV3",JSON.stringify(S))}catch(x){}});
+document.addEventListener("change",e=>{const t=e.target,d=t.dataset;
+ if(t.id=="rad")render();
+ else if(d.ck!==undefined){S.tasks[+d.ck].d=t.checked?1:0;render()}
+ else if(d.tn!==undefined||d.tu!==undefined){if(d.tu!==undefined)S.tasks[+d.tu].u=t.value;srt();render()}
+ else if(d.iv!==undefined){S.guests[+d.iv].inv=t.checked?1:0;render()}
+ else if(d.rs!==undefined){S.guests[+d.rs].rsvp=t.value;render()}
+ else if(d.c){const[i,j]=d.c.split("-").map(Number),g=S.guests[i];g.d=t.checked?[...g.d,j]:g.d.filter(x=>x!=j);render()}
+ else if(t.id=="imp"||t.id=="gup"){const f=t.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{
+  if(t.id=="imp")Object.assign(S,JSON.parse(r.result));
+  else r.result.split(/\r?\n/).forEach((l,k)=>{const p=l.split(",").map(x=>x.trim());if(!p[0]||(k==0&&/^name$/i.test(p[0])))return;S.guests.push({n:p[0],e:p[1]||"",d:[],inv:0,rsvp:"Pending"})});
+  render()}catch(x){alert("That file could not be read.")}};r.readAsText(f);t.value=""}});
+render();
+</script></body></html>
